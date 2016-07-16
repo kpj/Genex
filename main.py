@@ -1,0 +1,25 @@
+"""
+Main interface of dynamical model optimization
+"""
+
+from algorithm import Evolution
+from data_generator import generate_data
+from plot_functions import plot_individual
+
+
+def main():
+    """ Common ground for all modules
+    """
+    data = generate_data()
+
+    ev = Evolution(100)
+    ev.set_data(data)
+
+    pop = ev.start(500)
+    best = pop[0]
+    print(ev.fit(best), best)
+
+    plot_individual(best, ev.op.data)
+
+if __name__ == '__main__':
+    main()
