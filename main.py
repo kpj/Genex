@@ -12,10 +12,10 @@ def main():
     """
     data = generate_data()
 
-    ev = Evolution(100)
+    ev = Evolution(40)
     ev.set_data(data)
 
-    pop = ev.start(500)
+    pop = ev.start(100)
     best = pop[0]
     print(ev.fit(best), best)
 

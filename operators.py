@@ -5,23 +5,31 @@ Definitions of evolutionary operators
 import copy
 import random
 
-from individual import get_symbols, Individual
+import numpy as np
+
+from individual import add_variables, get_symbols
+from data_generator import simulate
 
 
 class Operators(object):
     def __init__(self):
         self.data = None
+        self.dim = None
 
     def set_data(self, data):
         self.data = data
+        self.dim = len(data[0][1])
 
-    def gen_individual(self):
+        add_variables(self.dim)
+        print('System has {} dimensions'.format(self.dim))
+
+    def gen_individual(self, raw=False):
         """ Generate basic individual
         """
         def gen_one(depth=0):
             if depth == 0:
                 ar = 1
-            elif depth >= 4:
+            elif depth >= 2:
                 ar = 0
             else:
                 ar = None
@@ -34,50 +42,73 @@ class Operators(object):
 
             return cur
 
-        return gen_one()
+        if raw:
+            return gen_one()
+        else:
+            return [gen_one() for _ in range(self.dim)]
 
-    def fitness(self, ind):
+    def fitness(self, ind_vec):
         """ Compute fitness of single individual
         """
-        func = ind.as_lambda()
+        def func(state, t):
+            return np.array([ind.as_lambda()(*state) for ind in ind_vec])
 
         try:
-            return sum([(y - func(x))**2 for x, y in self.data])/len(self.data)
+            data = simulate(func, len(self.data[0][1]))
         except (ZeroDivisionError, OverflowError, ValueError):
             return float('inf')
 
-    def mutate(self, ind):
+        diffs = []
+        for (_, sim), (_, orig) in zip(data, self.data):
+            diffs.append(np.mean((sim - orig)**2))
+        return np.mean(diffs)
+
+    def mutate(self, ind_vec):
         """ Mutate single individual
         """
-        def _mutate(sub):
-            # vary coefficient
-            sub._coeff += random.gauss(0, 1)
-            if random.random() < 0.1:
-                sub._coeff *= -1
+        for ind in ind_vec:
+            c = random.choice(list(ind))
+            self._mutate(c)
 
-            if len(sub) > 10:
-                return
+    def _mutate(self, sub):
+        # vary coefficient
+        sub._coeff += random.gauss(0, 1)
+        if random.random() < 0.1:
+            sub._coeff *= -1
 
-            # change function
-            if random.random() < 0.9:
-                syms = list(get_symbols(arity=len(sub.args), str_frmt=True))
-                sub._sym = random.choice(syms)[0]
-            else:
-                syms = list(get_symbols(arity=None, str_frmt=True))
-                sy, ar = random.choice(syms)
+        if len(sub) > 10:
+            return
 
-                sub._sym = sy
-                sub._args = [Individual() for _ in range(ar)]
+        # change function
+        if random.random() < 0.5:
+            syms = list(get_symbols(arity=len(sub.args), str_frmt=True))
+            sub._sym = random.choice(syms)[0]
+        else:
+            syms = list(get_symbols(arity=None, str_frmt=True))
+            sy, ar = random.choice(syms)
 
-        c = random.choice(list(ind))
-        _mutate(c)
+            sub._sym = sy
+            sub._args = [self.gen_individual(True) for _ in range(ar)]
 
-    def crossover(self, ind1, ind2):
+    def crossover(self, ind1_vec, ind2_vec):
         """ Compute offspring of two individuals
         """
+        for i in range(self.dim):
+            ind1_vec[i], ind2_vec[i] = self._crossover(ind1_vec[i], ind2_vec[i])
+
+            if ind1_vec[i] is None or ind2_vec[i] is None:
+                return None, None
+
+        return ind1_vec, ind2_vec
+
+    def _crossover(self, ind1, ind2):
         if len(ind1) == 1 or len(ind2) == 1:
-            return None, None
-        if len(ind1) >= 10 or len(ind2) >= 10:
+            cdiff = (ind1.coeff - ind2.coeff)/10
+            ind1._coeff -= cdiff
+            ind2._coeff += cdiff
+
+            return ind1, ind2
+        if len(ind1) >= 5 or len(ind2) >= 5:
             return None, None
 
         c1 = random.randint(1, len(ind1)-1)
