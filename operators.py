@@ -18,7 +18,7 @@ class Operators(object):
 
     def set_data(self, data):
         self.data = data
-        self.dim = len(data[0][1])
+        self.dim = len(data[0]['data'][0][1])
 
         add_variables(self.dim)
         print('System has {} dimensions'.format(self.dim))
@@ -53,15 +53,21 @@ class Operators(object):
         def func(state, t):
             return np.array([ind.as_lambda()(*state) for ind in ind_vec])
 
-        try:
-            data = simulate(func, len(self.data[0][1]))
-        except (ZeroDivisionError, OverflowError, ValueError):
-            return float('inf')
+        fitn = []
+        for e in self.data:
+            init = e['init']
+            orig_data = e['data']
 
-        diffs = []
-        for (_, sim), (_, orig) in zip(data, self.data):
-            diffs.append(np.mean((sim - orig)**2))
-        return np.mean(diffs)
+            try:
+                sim_data = simulate(func, init)
+            except (ZeroDivisionError, OverflowError, ValueError):
+                return float('inf')
+
+            diffs = []
+            for (_, sim), (_, orig) in zip(sim_data, orig_data):
+                diffs.append(np.mean((sim - orig)**2))
+            fitn.append(np.mean(diffs))
+        return np.mean(fitn)
 
     def mutate(self, ind_vec):
         """ Mutate single individual

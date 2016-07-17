@@ -10,11 +10,13 @@ from data_generator import simulate
 
 
 def plot_data(data, ax, title=''):
-    dim = len(data[0][1])
+    """ Plot solution of first initial condition
+    """
+    dim = len(data[0]['data'][0][1])
 
     ts = []
     series_vec = [[] for _ in range(dim)]
-    for t, state in data:
+    for t, state in data[0]['data']:
         ts.append(t)
         for i, val in enumerate(state):
             series_vec[i].append(val)
@@ -26,10 +28,19 @@ def plot_data(data, ax, title=''):
     ax.legend(loc='best')
 
 def plot_individual(ind_vec, orig_data):
+    # compute series of individual
     def func(state, t):
         return np.array([ind.as_lambda()(*state) for ind in ind_vec])
-    sim_data = simulate(func, len(orig_data[0][1]), 100)
 
+    sim_data = []
+    for e in orig_data:
+        init = e['init']
+        sim_data.append({
+            'init': init,
+            'data': simulate(func, init, 100)
+        })
+
+    # plot result
     fig, (ax1, ax2) = plt.subplots(1, 2)
     plot_data(
         orig_data, ax1,

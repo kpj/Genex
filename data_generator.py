@@ -6,12 +6,10 @@ import numpy as np
 from scipy.integrate import odeint
 
 
-def simulate(func, dim, resolution=100):
+def simulate(func, init, resolution=50):
     """ Simulate given ODE
     """
     ts = np.linspace(0, 10, resolution)
-    init = [1.8] * dim
-
     res = odeint(func, init, ts).T
 
     out = [(cur[0], np.array(cur[1:])) for cur in zip(ts, *res)]
@@ -27,11 +25,17 @@ def generate_data():
             x * y - 3 * y
         ])
 
-    def func(state, t):
-        x, y = state
-        return np.array([
-            x,
-            -2
-        ])
+    #def func(state, t):
+    #    x, y = state
+    #    return np.array([
+    #        x,
+    #        -2
+    #    ])
 
-    return simulate(func, 2)
+    out = []
+    for init in [(0.5, 0.5), (1, 1), (1.5, 1.5)]:
+        out.append({
+            'init': init,
+            'data': simulate(func, init)
+        })
+    return out
