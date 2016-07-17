@@ -2,6 +2,7 @@
 Definition of the algorithm used for model optimization
 """
 
+import copy
 import random
 
 from tqdm import trange
@@ -51,7 +52,8 @@ class Evolution(object):
         # crossover
         self.population = sorted(self.population, key=self.fit)
         p1, p2 = self.population[:2]
-        c1, c2 = self.op.crossover(p1, p2)
+        c1, c2 = self.op.crossover(
+            copy.deepcopy(p1), copy.deepcopy(p2))
         if not c1 is None and not c2 is None:
             f1 = self.fit(c1)
             f2 = self.fit(c2)
