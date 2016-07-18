@@ -41,12 +41,21 @@ class Evolution(object):
         self.sorted = False
         self.fitness = [float('inf')] * len(self.population)
 
+        df = pd.DataFrame()
         for s in trange(step_num):
             # compute evolutionary step
             self._step()
 
             # keep some statistics
-            # TODO
+            for fit in self.fitness:
+                df = df.append({
+                    'step': s,
+                    'fitness': fit
+                }, ignore_index=True)
+
+        #df.set_index('step', inplace=True)
+        sns.boxplot(x='step', y='fitness', data=df)
+        #plt.gca().set(yscale='log')
 
         self.sort()
         return self.population
