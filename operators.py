@@ -63,6 +63,9 @@ class Operators(object):
             except (ZeroDivisionError, OverflowError, ValueError):
                 return float('inf')
 
+            if sim_data is None:
+                return float('inf')
+
             diffs = []
             for (_, sim), (_, orig) in zip(sim_data, orig_data):
                 diffs.append(np.mean((sim - orig)**2))

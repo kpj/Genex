@@ -10,7 +10,12 @@ def simulate(func, init, resolution=50):
     """ Simulate given ODE
     """
     ts = np.linspace(0, 10, resolution)
-    res = odeint(func, init, ts).T
+    raw, info = odeint(func, init, ts, full_output=True)
+    res = raw.T
+
+    # TODO: use better check for success
+    if info['message'] != 'Integration successful.':
+        return None
 
     out = [(cur[0], np.array(cur[1:])) for cur in zip(ts, *res)]
     return out
