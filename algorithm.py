@@ -60,6 +60,7 @@ class Evolution(object):
         #df.set_index('step', inplace=True)
         sns.boxplot(x='step', y='fitness', data=df)
         #plt.gca().set(yscale='log')
+        plt.savefig('images/population_evolution.pdf')
 
         self.sort()
         return self.population

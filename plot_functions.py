@@ -25,7 +25,7 @@ def plot_data(data, ax_arr, title=''):
         for i, series in enumerate(series_vec):
             ax.plot(ts, series, label='Series {}'.format(i))
 
-        ax.set_title(title, fontsize=32)
+        ax.set_title(title)
         ax.legend(loc='best')
 
 def plot_individual(ind_vec, orig_data):
@@ -42,11 +42,15 @@ def plot_individual(ind_vec, orig_data):
         })
 
     # plot result
-    fig, ax_arr = plt.subplots(len(orig_data), 2)
+    fig, ax_arr = plt.subplots(
+        len(orig_data), 2,
+        sharex=True) # sharey=True
     plot_data(
         orig_data, ax_arr[:,0],
         'input data')
     plot_data(
         sim_data, ax_arr[:,1],
         ', '.join([ind.latex_repr() for ind in ind_vec]))
-    plt.show()
+
+    plt.tight_layout()
+    plt.savefig('images/result.pdf')
