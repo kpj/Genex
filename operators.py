@@ -21,7 +21,6 @@ class Operators(object):
         self.dim = len(data[0]['data'][0][1])
 
         add_variables(self.dim)
-        print('System has {} dimensions'.format(self.dim))
 
     def gen_individual(self, raw=False):
         """ Generate basic individual
@@ -117,23 +116,35 @@ class Operators(object):
             ind2._coeff += cdiff
 
             return ind1, ind2
-        if len(ind1) >= 5 or len(ind2) >= 5:
+        if ind1.depth >= 5 or ind2.depth >= 5:
             return None, None
 
-        c1 = random.randint(1, len(ind1)-1)
-        c2 = random.randint(1, len(ind2)-1)
+        c1 = random.randrange(len(ind1))
+        c2 = random.randrange(len(ind2))
 
-        foo1 = copy.deepcopy(ind1[c1])
-        foo2 = copy.deepcopy(ind2[c2])
+        if random.random() < 0.5:
+            cdiff = (ind1[c1].coeff - ind2[c2].coeff)/10
+            ind1[c1]._coeff -= cdiff
+            ind2[c2]._coeff += cdiff
+            return ind1, ind2
+        else:
+            return self._exchange_nodes(ind1, ind2, c1, c2)
 
-        def parse(cur, repl, goal, count=1):
+    def _exchange_nodes(self, ind1, ind2, idx1, idx2):
+        """ Exchange nodes at indices
+        """
+        def parse(cur, repl, goal, count=0):
             for i in range(len(cur.args)):
                 if count == goal:
                     cur._args[i] = repl
+                    return
                 count += 1
-                parse(cur._args[i], repl, goal, count)
+                parse(cur.args[i], repl, goal, count)
 
-        parse(ind1, foo2, c1)
-        parse(ind2, foo1, c2)
+        sub1 = copy.deepcopy(ind1[idx1])
+        sub2 = copy.deepcopy(ind2[idx2])
+
+        parse(ind1, sub2, idx1)
+        parse(ind2, sub1, idx2)
 
         return ind1, ind2
