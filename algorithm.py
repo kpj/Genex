@@ -3,7 +3,14 @@ Definition of the algorithm used for model optimization
 """
 
 import copy
+import math
 import random
+
+import numpy as np
+import pandas as pd
+
+import seaborn as sns
+import matplotlib.pylab as plt
 
 from tqdm import trange
 
@@ -15,10 +22,11 @@ class Evolution(object):
     """
     def __init__(self, pop_size):
         self.population_size = pop_size
-        self.population = None
 
+        self.population = []
+        self.fitness = []
+        self.sorted = True
         self.op = Operators()
-        self.fit = self.op.fitness
 
         self.mutation_probability = 0.05
 
@@ -30,6 +38,8 @@ class Evolution(object):
         """
         self.population = [self.op.gen_individual()
             for _ in range(self.population_size)]
+        self.sorted = False
+        self.fitness = [float('inf')] * len(self.population)
 
         for s in trange(step_num):
             # compute evolutionary step
@@ -38,8 +48,32 @@ class Evolution(object):
             # keep some statistics
             # TODO
 
-        self.population = sorted(self.population, key=self.fit)
+        self.sort()
         return self.population
+
+    def sort(self):
+        """ Sort population if needed
+        """
+        if not self.sorted:
+            self._recompute_fitness()
+
+            self.population = [ind
+                for (fit,ind) in sorted(
+                    zip(self.fitness, self.population),
+                    key=lambda pair: pair[0])]
+            self.fitness = sorted(self.fitness)
+
+            self.sorted = True
+
+    def _recompute_fitness(self):
+        """ Recomputes fitness only if needed
+        """
+        for i, ind_vec in enumerate(self.population):
+            if not ind_vec[0].valid_fitness:
+                self.fitness[i] = self.op.fitness(ind_vec)
+
+            for ind in ind_vec:
+                ind.valid_fitness = True
 
     def _step(self):
         """ Act out single step of natural selection, etc
@@ -48,6 +82,7 @@ class Evolution(object):
         for ind in self.population:
             if random.random() < self.mutation_probability:
                 self.op.mutate(ind)
+                self.sorted = False
 
         # crossover
         self.sort()

@@ -15,9 +15,8 @@ def main():
     ev = Evolution(40)
     ev.set_data(data)
 
-    pop = ev.start(100)
-    best = pop[0]
-    print(ev.fit(best), best)
+    best, bfit = pop[0], ev.fitness[0]
+    print(bfit, best)
 
     plot_individual(best, ev.op.data)
 
