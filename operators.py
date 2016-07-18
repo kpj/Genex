@@ -119,8 +119,8 @@ class Operators(object):
         if ind1.depth >= 5 or ind2.depth >= 5:
             return None, None
 
-        c1 = random.randrange(len(ind1))
-        c2 = random.randrange(len(ind2))
+        c1 = random.randrange(len(ind1)-1)
+        c2 = random.randrange(len(ind2)-1)
 
         if random.random() < 0.5:
             cdiff = (ind1[c1].coeff - ind2[c2].coeff)/10
