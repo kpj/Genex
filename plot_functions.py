@@ -9,23 +9,24 @@ import matplotlib.pylab as plt
 from data_generator import simulate
 
 
-def plot_data(data, ax, title=''):
+def plot_data(data, ax_arr, title=''):
     """ Plot solution of first initial condition
     """
     dim = len(data[0]['data'][0][1])
 
-    ts = []
-    series_vec = [[] for _ in range(dim)]
-    for t, state in data[0]['data']:
-        ts.append(t)
-        for i, val in enumerate(state):
-            series_vec[i].append(val)
+    for cur_data, ax in zip(data, ax_arr):
+        ts = []
+        series_vec = [[] for _ in range(dim)]
+        for t, state in cur_data['data']:
+            ts.append(t)
+            for i, val in enumerate(state):
+                series_vec[i].append(val)
 
-    for i, series in enumerate(series_vec):
-        ax.plot(ts, series, label='Series {}'.format(i))
+        for i, series in enumerate(series_vec):
+            ax.plot(ts, series, label='Series {}'.format(i))
 
-    ax.set_title(title, fontsize=32)
-    ax.legend(loc='best')
+        ax.set_title(title, fontsize=32)
+        ax.legend(loc='best')
 
 def plot_individual(ind_vec, orig_data):
     # compute series of individual
@@ -41,11 +42,11 @@ def plot_individual(ind_vec, orig_data):
         })
 
     # plot result
-    fig, (ax1, ax2) = plt.subplots(1, 2)
+    fig, ax_arr = plt.subplots(len(orig_data), 2)
     plot_data(
-        orig_data, ax1,
+        orig_data, ax_arr[:,0],
         'input data')
     plot_data(
-        sim_data, ax2,
+        sim_data, ax_arr[:,1],
         ', '.join([ind.latex_repr() for ind in ind_vec]))
     plt.show()
