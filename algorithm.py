@@ -92,9 +92,9 @@ class Evolution(object):
         offspring = []
         lp = len(self.population) // 2
         for _ in range(lp):
-            idx1 = idx2 = int(math.sqrt(random.randrange(lp**2)))
+            idx1 = idx2 = int(math.sqrt(random.randrange(lp**2+1)))
             while idx1 == idx2:
-                idx2 = int(math.sqrt(random.randrange(lp**2)))
+                idx2 = int(math.sqrt(random.randrange(lp**2+1)))
 
             p1, p2 = self.population[idx1], self.population[idx2]
             tmp = self.op.crossover(
