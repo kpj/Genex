@@ -113,9 +113,9 @@ class Evolution(object):
                 }
 
                 offspring.append(
-                    c1 if c1['fitness'] > p1['fitness'] else p1)
+                    c1 if c1['fitness'] < p1['fitness'] else p1)
                 offspring.append(
-                    c2 if c2['fitness'] > p2['fitness'] else p2)
+                    c2 if c2['fitness'] < p2['fitness'] else p2)
             else:
                 offspring.extend((p1, p2))
 
