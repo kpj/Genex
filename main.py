@@ -16,7 +16,7 @@ def main():
     ev.set_data(data)
 
     pop = ev.start(100)
-    best, bfit = pop[0], ev.fitness[0]
+    best, bfit = ev.get_individual(0), ev.get_fitness(0)
     print(bfit, best)
 
     plot_individual(best, ev.op.data)

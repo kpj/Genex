@@ -24,8 +24,6 @@ class Evolution(object):
         self.population_size = pop_size
 
         self.population = []
-        self.fitness = []
-        self.sorted = True
         self.op = Operators()
 
         self.mutation_probability = 0.05
@@ -33,13 +31,19 @@ class Evolution(object):
     def set_data(self, data):
         self.op.set_data(data)
 
+    def get_fitness(self, idx):
+        return self.population[idx]['fitness']
+
+    def get_individual(self, idx):
+        return self.population[idx]['individual']
+
     def start(self, step_num):
         """ Commence evolution procedure
         """
-        self.population = [self.op.gen_individual()
-            for _ in range(self.population_size)]
-        self.sorted = False
-        self.fitness = [float('inf')] * len(self.population)
+        self.population = [{
+            'individual': self.op.gen_individual(),
+            'fitness': None
+        } for _ in range(self.population_size)]
 
         df = pd.DataFrame()
         for s in trange(step_num):
@@ -47,10 +51,10 @@ class Evolution(object):
             self._step()
 
             # keep some statistics
-            for fit in self.fitness:
+            for i in range(len(self.population)):
                 df = df.append({
                     'step': s,
-                    'fitness': fit
+                    'fitness': self.get_fitness(i)
                 }, ignore_index=True)
 
         #df.set_index('step', inplace=True)
@@ -61,37 +65,26 @@ class Evolution(object):
         return self.population
 
     def sort(self):
-        """ Sort population if needed
+        """ Sort population
         """
-        if not self.sorted:
-            self._recompute_fitness()
-
-            self.population = [ind
-                for (fit,ind) in sorted(
-                    zip(self.fitness, self.population),
-                    key=lambda pair: pair[0])]
-            self.fitness = sorted(self.fitness)
-
-            self.sorted = True
+        self._recompute_fitness()
+        self.population = sorted(self.population, key=lambda e: e['fitness'])
 
     def _recompute_fitness(self):
         """ Recomputes fitness only if needed
         """
-        for i, ind_vec in enumerate(self.population):
-            if not ind_vec[0].valid_fitness:
-                self.fitness[i] = self.op.fitness(ind_vec)
-
-            for ind in ind_vec:
-                ind.valid_fitness = True
+        for cur in self.population:
+            if cur['fitness'] is None:
+                cur['fitness'] = self.op.fitness(cur['individual'])
 
     def _step(self):
         """ Act out single step of natural selection, etc
         """
         # mutations
-        for ind in self.population:
+        for cur in self.population:
             if random.random() < self.mutation_probability:
-                self.op.mutate(ind)
-                self.sorted = False
+                self.op.mutate(cur['individual'])
+                cur['fitness'] = None
 
         # crossover
         self.sort()
@@ -104,13 +97,25 @@ class Evolution(object):
                 idx2 = int(math.sqrt(random.randrange(lp**2)))
 
             p1, p2 = self.population[idx1], self.population[idx2]
-            c1, c2 = self.op.crossover(
-                copy.deepcopy(p1), copy.deepcopy(p2))
-            if not c1 is None and not c2 is None:
-                offspring.append(c1 if self.op.fitness(c1) > self.fitness[idx1] else p1)
-                offspring.append(c2 if self.op.fitness(c2) > self.fitness[idx2] else p2)
+            tmp = self.op.crossover(
+                copy.deepcopy(p1['individual']),
+                copy.deepcopy(p2['individual']))
+
+            if not tmp[0] is None and not tmp[1] is None:
+                c1 = {
+                    'individual': tmp[0],
+                    'fitness': self.op.fitness(tmp[0])
+                }
+                c2 = {
+                    'individual': tmp[1],
+                    'fitness': self.op.fitness(tmp[1])
+                }
+
+                offspring.append(
+                    c1 if c1['fitness'] > p1['fitness'] else p1)
+                offspring.append(
+                    c2 if c2['fitness'] > p2['fitness'] else p2)
             else:
                 offspring.extend((p1, p2))
 
         self.population[:] = offspring
-        self.sorted = False

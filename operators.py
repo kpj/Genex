@@ -78,7 +78,6 @@ class Operators(object):
         for ind in ind_vec:
             c = random.choice(list(ind))
             self._mutate(c)
-            ind.valid_fitness = False
 
     def _mutate(self, sub):
         # vary coefficient
@@ -136,8 +135,5 @@ class Operators(object):
 
         parse(ind1, foo2, c1)
         parse(ind2, foo1, c2)
-
-        ind1.valid_fitness = False
-        ind2.valid_fitness = False
 
         return ind1, ind2
