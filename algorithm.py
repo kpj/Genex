@@ -115,6 +115,7 @@ class Evolution(object):
         """
         sel = []
 
+        # choose randomly while favouring fit individuals
         lp = len(self.population) // 2
         for _ in range(lp):
             idx1 = idx2 = int(math.sqrt(random.randrange(lp**2+1)))
