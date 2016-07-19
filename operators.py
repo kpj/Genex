@@ -111,7 +111,7 @@ class Operators(object):
 
     def _crossover(self, ind1, ind2):
         if len(ind1) == 1 or len(ind2) == 1:
-            cdiff = (ind1.coeff - ind2.coeff)/10
+            cdiff = (ind1.coeff - ind2.coeff)/random.randrange(1, 20)
             ind1._coeff -= cdiff
             ind2._coeff += cdiff
 
@@ -123,7 +123,7 @@ class Operators(object):
         c2 = random.randrange(len(ind2)-1)
 
         if random.random() < 0.5:
-            cdiff = (ind1[c1].coeff - ind2[c2].coeff)/random.randrange(5, 15)
+            cdiff = (ind1[c1].coeff - ind2[c2].coeff)/random.randrange(1, 20)
             ind1[c1]._coeff -= cdiff
             ind2[c2]._coeff += cdiff
             return ind1, ind2
