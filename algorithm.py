@@ -59,6 +59,11 @@ class Evolution(object):
                         'expr. depth': np.mean([ind.depth for ind in self.get_individual(i)])
                     }, ignore_index=True)
 
+            # check stopping condition
+            self.sort()
+            if self.get_fitness(0) < 1e-4:
+                break
+
         if not df.empty:
             plt.figure()
             sns.boxplot(x='step', y='fitness', data=df)
