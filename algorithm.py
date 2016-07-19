@@ -27,6 +27,7 @@ class Evolution(object):
         self.op = Operators()
 
         self.mutation_probability = 0.05
+        self.elitist_fraction = 0.1
 
     def set_data(self, data):
         self.op.set_data(data)
@@ -101,6 +102,11 @@ class Evolution(object):
         selection = self._select()
         offspring = self._crossover(selection)
         self._mutate(offspring)
+
+        # be an elitist and keep best individuals
+        self.sort()
+        elite_num = int(self.elitist_fraction * len(self.population))
+        offspring[:elite_num] = self.population[:elite_num]
 
         self.population[:] = offspring
 
