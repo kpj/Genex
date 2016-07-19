@@ -51,16 +51,22 @@ class Evolution(object):
             self._step()
 
             # keep some statistics
-            for i in range(len(self.population)):
-                df = df.append({
-                    'step': s,
-                    'fitness': self.get_fitness(i)
-                }, ignore_index=True)
+            if s > step_num / 10:
+                for i in range(len(self.population)):
+                    df = df.append({
+                        'step': s,
+                        'fitness': self.get_fitness(i),
+                        'expr. depth': np.mean([ind.depth for ind in self.get_individual(i)])
+                    }, ignore_index=True)
 
-        #df.set_index('step', inplace=True)
-        sns.boxplot(x='step', y='fitness', data=df)
-        #plt.gca().set(yscale='log')
-        plt.savefig('images/population_evolution.pdf')
+        if not df.empty:
+            plt.figure()
+            sns.boxplot(x='step', y='fitness', data=df)
+            plt.savefig('images/fitness_evolution.pdf')
+
+            plt.figure()
+            sns.boxplot(x='step', y='expr. depth', data=df)
+            plt.savefig('images/depth_evolution.pdf')
 
         self.sort()
         return self.population
