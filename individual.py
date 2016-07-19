@@ -27,7 +27,7 @@ class Individual(object):
     """ Abstract individual of population
     """
     def __init__(self, coeff=1., symbol='', args=None):
-        self._coeff = coeff
+        self._coeff = float(coeff)
         self._sym = symbol
         self._args = args if not args is None else []
 
