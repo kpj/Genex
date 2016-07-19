@@ -37,13 +37,10 @@ class Evolution(object):
     def get_individual(self, idx):
         return self.population[idx]['individual']
 
-    def start(self, step_num):
+    def run(self, step_num):
         """ Commence evolution procedure
         """
-        self.population = [{
-            'individual': self.op.gen_individual(),
-            'fitness': None
-        } for _ in range(self.population_size)]
+        self._initialize()
 
         df = pd.DataFrame()
         for s in trange(step_num):
@@ -89,19 +86,29 @@ class Evolution(object):
             if cur['fitness'] is None:
                 cur['fitness'] = self.op.fitness(cur['individual'])
 
+    def _initialize(self):
+        """ Set up initial population
+        """
+        self.population = [{
+            'individual': self.op.gen_individual(),
+            'fitness': None
+        } for _ in range(self.population_size)]
+
     def _step(self):
         """ Act out single step of natural selection, etc
         """
-        # mutations
-        for cur in self.population:
-            if random.random() < self.mutation_probability:
-                self.op.mutate(cur['individual'])
-                cur['fitness'] = None
-
-        # crossover
         self.sort()
+        selection = self._select()
+        offspring = self._crossover(selection)
+        self._mutate(offspring)
 
-        offspring = []
+        self.population[:] = offspring
+
+    def _select(self):
+        """ Select individuals from population for crossover
+        """
+        sel = []
+
         lp = len(self.population) // 2
         for _ in range(lp):
             idx1 = idx2 = int(math.sqrt(random.randrange(lp**2+1)))
@@ -109,6 +116,15 @@ class Evolution(object):
                 idx2 = int(math.sqrt(random.randrange(lp**2+1)))
 
             p1, p2 = self.population[idx1], self.population[idx2]
+            sel.append((p1, p2))
+
+        return sel
+
+    def _crossover(self, sel):
+        """ Crossover given individuals and return offspring
+        """
+        offspring = []
+        for p1, p2 in sel:
             tmp = self.op.crossover(
                 copy.deepcopy(p1['individual']),
                 copy.deepcopy(p2['individual']))
@@ -129,5 +145,12 @@ class Evolution(object):
                     c2 if c2['fitness'] < p2['fitness'] else p2)
             else:
                 offspring.extend((p1, p2))
+        return offspring
 
-        self.population[:] = offspring
+    def _mutate(self, individuals):
+        """ Mutate given individuals with some probability
+        """
+        for cur in individuals:
+            if random.random() < self.mutation_probability:
+                self.op.mutate(cur['individual'])
+                cur['fitness'] = None

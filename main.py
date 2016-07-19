@@ -15,7 +15,7 @@ def main():
     ev = Evolution(40)
     ev.set_data(data)
 
-    pop = ev.start(100)
+    pop = ev.run(100)
     best, bfit = ev.get_individual(0), ev.get_fitness(0)
     print(bfit, best)
 
