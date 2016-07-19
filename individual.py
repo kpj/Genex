@@ -101,8 +101,7 @@ class Individual(object):
                 res, i = self._getter(a, key, i)
                 if not res is None:
                     return res, i
-
-        raise IndexError('index out of range ({} >= {})'.format(key, len(self)-1))
+        return None, i
 
     def as_lambda(self):
         return eval('lambda {args}: {body}'.format(
