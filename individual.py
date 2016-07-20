@@ -26,10 +26,11 @@ SYMBOL_LIST = [
 class Individual(object):
     """ Abstract individual of population
     """
-    def __init__(self, coeff=1., symbol='', args=None):
+    def __init__(self, coeff=1., symbol='', args=None, varis=None):
         self._coeff = float(coeff)
         self._sym = symbol
         self._args = args if not args is None else []
+        self._vars = varis if not varis is None else get_variables()
 
     @property
     def coeff(self):
@@ -42,6 +43,10 @@ class Individual(object):
     @property
     def args(self):
         return self._args
+
+    @property
+    def variables(self):
+        return self._vars
 
     @property
     def arity(self):
@@ -105,7 +110,7 @@ class Individual(object):
 
     def as_lambda(self):
         return eval('lambda {args}: {body}'.format(
-            args=','.join(get_variables()),
+            args=','.join(self.variables),
             body=self._repr()), math.__dict__)
 
 def get_symbols(arity=None, str_frmt=False):

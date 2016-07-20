@@ -1,0 +1,40 @@
+"""
+Analyze result of evolution
+"""
+
+import sys
+import pickle
+
+import seaborn as sns
+import matplotlib.pylab as plt
+
+from plot_functions import plot_individual
+
+
+def evolution_overview(df):
+    """ Give overview of development of population
+    """
+    if not df.empty:
+        plt.figure()
+        sns.boxplot(x='step', y='fitness', data=df)
+        plt.savefig('images/fitness_evolution.pdf')
+
+        plt.figure()
+        sns.boxplot(x='step', y='expr. depth', data=df)
+        plt.savefig('images/depth_evolution.pdf')
+
+def main(fname):
+    """ Main hub
+    """
+    with open(fname, 'rb') as fd:
+        res = pickle.load(fd)
+
+    evolution_overview(res['df'])
+    plot_individual(res['population'][0]['individual'], res['data'])
+
+if __name__ == '__main__':
+    if len(sys.argv) != 2:
+        print('Usage: {} <result file>'.format(sys.argv[0]))
+        exit(-1)
+
+    main(sys.argv[1])

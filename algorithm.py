@@ -9,9 +9,6 @@ import random
 import numpy as np
 import pandas as pd
 
-import seaborn as sns
-import matplotlib.pylab as plt
-
 from tqdm import trange
 
 from operators import Operators
@@ -63,17 +60,8 @@ class Evolution(object):
             if self.get_fitness(0) < 1e-4:
                 break
 
-        if not df.empty:
-            plt.figure()
-            sns.boxplot(x='step', y='fitness', data=df)
-            plt.savefig('images/fitness_evolution.pdf')
-
-            plt.figure()
-            sns.boxplot(x='step', y='expr. depth', data=df)
-            plt.savefig('images/depth_evolution.pdf')
-
         self.sort()
-        return self.population
+        return self.population, df
 
     def sort(self):
         """ Sort population

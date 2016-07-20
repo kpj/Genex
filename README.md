@@ -6,7 +6,8 @@ Fit model of dynamical system to data
 ## Usage
 
 ```
-$ python main.py
+$ python main.py result.pkl
+$ python analyze_result.py result.pkl
 ```
 
 ## Tests

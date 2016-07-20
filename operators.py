@@ -7,7 +7,7 @@ import random
 
 import numpy as np
 
-from individual import add_variables, get_symbols
+from individual import get_symbols, add_variables, get_variables
 from data_generator import simulate
 
 
