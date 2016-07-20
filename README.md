@@ -23,10 +23,11 @@ $ nosetests
 * Crossover
   * Coefficient pulling
     * Randomized scale to prevent cycles
+  * Coefficient sign switch
   * Exchange subtrees between terms
 * Mutation
   * Add scaled Gauss to coefficient
-  * Switch function which operator of same arity or different arity with randomized arguments
+  * Switch function with operator of same arity or different arity with randomized arguments
 * Misc
   * Keep elite (fittest individuals) over generations
 * Fitness
