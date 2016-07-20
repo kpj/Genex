@@ -28,6 +28,7 @@ class Evolution(object):
 
         self.mutation_probability = 0.05
         self.elitist_fraction = 0.1
+        self.culling_fraction = 0.2
 
     def set_data(self, data):
         self.op.set_data(data)
@@ -41,7 +42,7 @@ class Evolution(object):
     def run(self, step_num):
         """ Commence evolution procedure
         """
-        self._initialize()
+        self.population = self._initialize()
 
         df = pd.DataFrame()
         for s in trange(step_num):
@@ -87,13 +88,16 @@ class Evolution(object):
             if cur['fitness'] is None:
                 cur['fitness'] = self.op.fitness(cur['individual'])
 
-    def _initialize(self):
+    def _initialize(self, size=None):
         """ Set up initial population
         """
-        self.population = [{
+        if size is None:
+            size = self.population_size
+
+        return [{
             'individual': self.op.gen_individual(),
             'fitness': None
-        } for _ in range(self.population_size)]
+        } for _ in range(size)]
 
     def _step(self):
         """ Act out single step of natural selection, etc
@@ -109,6 +113,11 @@ class Evolution(object):
         offspring[:elite_num] = self.population[:elite_num]
 
         self.population[:] = offspring
+        self.sort()
+
+        # apply culling
+        cull_num = int(self.culling_fraction * len(self.population))
+        self.population[-cull_num:] = self._initialize(cull_num)
 
     def _select(self):
         """ Select individuals from population for crossover

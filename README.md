@@ -30,5 +30,6 @@ $ nosetests
   * Switch function with operator of same arity or different arity with randomized arguments
 * Misc
   * Keep elite (fittest individuals) over generations
+  * Apply culling technique
 * Fitness
   * Least-squares of series with multiple initial conditions
