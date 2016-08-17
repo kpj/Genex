@@ -65,11 +65,24 @@ class Operators(object):
             if sim_data is None:
                 return float('inf')
 
-            diffs = []
-            for (_, sim), (_, orig) in zip(sim_data, orig_data):
-                diffs.append(np.mean((sim - orig)**2))
-            fitn.append(np.mean(diffs))
-        return np.mean(fitn)
+            errs = []
+            for i in range(len(orig_data[0][1])):
+                sim_vec, orig_vec = [], []
+                for (_, sim), (_, orig) in zip(sim_data, orig_data):
+                    sim_vec.append(sim[i])
+                    orig_vec.append(orig[i])
+
+                sim_vec = np.asarray(sim_vec)
+                orig_vec = np.asarray(orig_vec)
+
+                err = np.sqrt(
+                    np.sum((sim_vec - orig_vec)**2)
+                    / np.sum((orig_vec - np.mean(orig_vec))**2)
+                )
+                errs.append(err)
+
+            fitn.append(np.mean(errs))
+        return np.mean(fitn)# + np.mean([ind.depth for ind in ind_vec])
 
     def mutate(self, ind_vec):
         """ Mutate single individual

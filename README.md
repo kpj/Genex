@@ -33,4 +33,4 @@ $ nosetests
   * Keep elite (fittest individuals) over generations
   * Apply culling technique
 * Fitness
-  * Least-squares of series with multiple initial conditions
+  * Root relative squared error of series with multiple initial conditions
