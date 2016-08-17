@@ -27,6 +27,14 @@ class Evolution(object):
         self.elitist_fraction = 0.1
         self.culling_fraction = 0.2
 
+        self.elite_num = int(self.elitist_fraction * self.population_size)
+        self.cull_num = int(self.culling_fraction * self.population_size)
+
+        if self.elite_num == 0:
+            print('[warning] population too small, no elitism')
+        if self.cull_num == 0:
+            print('[warning] population too small, no culling')
+
     def set_data(self, data):
         self.op.set_data(data)
 
@@ -95,17 +103,16 @@ class Evolution(object):
         offspring = self._crossover(selection)
         self._mutate(offspring)
 
-        # be an elitist and keep best individuals
         self.sort()
-        elite_num = int(self.elitist_fraction * len(self.population))
-        offspring[:elite_num] = self.population[:elite_num]
+        if self.elite_num > 0:
+            offspring[:self.elite_num] = self.population[:self.elite_num]
 
         self.population[:] = offspring
-        self.sort()
 
-        # apply culling
-        cull_num = int(self.culling_fraction * len(self.population))
-        self.population[-cull_num:] = self._initialize(cull_num)
+        self.sort()
+        if self.cull_num > 0:
+            self.population[-self.cull_num:] = self._initialize(self.cull_num)
+
 
     def _select(self):
         """ Select individuals from population for crossover
