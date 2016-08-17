@@ -47,8 +47,9 @@ class Operators(object):
     def fitness(self, ind_vec):
         """ Compute fitness of single individual
         """
+        func_arr = [ind.as_lambda() for ind in ind_vec]
         def func(state, t):
-            return np.array([ind.as_lambda()(*state) for ind in ind_vec])
+            return np.array([f(*state) for f in func_arr])
 
         fitn = []
         for e in self.data:
