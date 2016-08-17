@@ -26,9 +26,7 @@ class Operators(object):
         """ Generate basic individual
         """
         def gen_one(depth=0):
-            if depth == 0:
-                ar = 1
-            elif depth >= 2:
+            if depth >= 5:
                 ar = 0
             else:
                 ar = None
@@ -93,18 +91,20 @@ class Operators(object):
 
     def _mutate(self, sub):
         # vary coefficient
-        sub._coeff += random.gauss(0, 1)
+        sub._coeff += random.gauss(0, sub.coeff/10)
         if random.random() < 0.1:
             sub._coeff *= -1
 
-        if len(sub) > 10:
+        if sub.depth >= 5:
             return
 
         # change function
         if random.random() < 0.5:
+            # replace with same arity
             syms = list(get_symbols(arity=len(sub.args), str_frmt=True))
             sub._sym = random.choice(syms)[0]
         else:
+            # replace with different arity and random arguments
             syms = list(get_symbols(arity=None, str_frmt=True))
             sy, ar = random.choice(syms)
 
