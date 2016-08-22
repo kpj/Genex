@@ -6,7 +6,7 @@ import numpy as np
 import seaborn as sns
 import matplotlib.pylab as plt
 
-from data_generator import simulate
+from .data_generator import simulate
 
 
 def plot_data(data, ax_arr, title=''):

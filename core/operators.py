@@ -7,8 +7,8 @@ import random
 
 import numpy as np
 
-from individual import get_symbols, add_variables, get_variables
-from data_generator import simulate
+from .individual import get_symbols, add_variables, get_variables
+from .data_generator import simulate
 
 
 class Operators(object):

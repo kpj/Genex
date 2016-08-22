@@ -5,8 +5,8 @@ Main interface of dynamical model optimization
 import sys
 import pickle
 
-from algorithm import Evolution
-from data_generator import generate_data
+from core.algorithm import Evolution
+from core.data_generator import generate_data
 
 
 def main(fname):

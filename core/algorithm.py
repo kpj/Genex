@@ -11,7 +11,7 @@ import pandas as pd
 
 from tqdm import trange
 
-from operators import Operators
+from .operators import Operators
 
 
 class Evolution(object):

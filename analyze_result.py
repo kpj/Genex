@@ -8,7 +8,7 @@ import pickle
 import seaborn as sns
 import matplotlib.pylab as plt
 
-from plot_functions import plot_individual
+from core.plot_functions import plot_individual
 
 
 def evolution_overview(df):
