@@ -22,6 +22,8 @@ def evolution_overview(df):
         plt.figure()
         sns.boxplot(x='step', y='expr. depth', data=df)
         plt.savefig('images/depth_evolution.pdf')
+    else:
+        print('[warning] no statistics available')
 
 def main(fname):
     """ Main hub
