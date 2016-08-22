@@ -17,6 +17,7 @@ def evolution_overview(df):
     if not df.empty:
         plt.figure()
         sns.boxplot(x='step', y='fitness', data=df)
+        plt.gca().set_yscale('log')
         plt.savefig('images/fitness_evolution.pdf')
 
         plt.figure()
