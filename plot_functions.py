@@ -44,7 +44,7 @@ def plot_individual(ind_vec, orig_data):
     # plot result
     fig, ax_arr = plt.subplots(
         len(orig_data), 2,
-        sharex=True) # sharey=True
+        sharex=True, sharey=True)
     plot_data(
         orig_data, ax_arr[:,0],
         'input data')
@@ -52,5 +52,5 @@ def plot_individual(ind_vec, orig_data):
         sim_data, ax_arr[:,1],
         ', '.join([ind.latex_repr() for ind in ind_vec]))
 
-    plt.tight_layout()
+    #plt.tight_layout()
     plt.savefig('images/result.pdf')
