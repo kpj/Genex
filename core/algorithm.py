@@ -4,11 +4,12 @@ Definition of the algorithm used for model optimization
 
 import copy
 import math
-import random
+import random, signal
 
 import numpy as np
 import pandas as pd
 
+import IPython
 from tqdm import trange
 
 from .operators import Operators
@@ -26,6 +27,7 @@ class Evolution(object):
         self.mutation_probability = 0.05
         self.elitist_fraction = 0.1
         self.culling_fraction = 0.2
+        self.fitness_threshold = 1e-4
 
         self.elite_num = int(self.elitist_fraction * self.population_size)
         self.cull_num = int(self.culling_fraction * self.population_size)
@@ -34,6 +36,15 @@ class Evolution(object):
             print('[warning] population too small, no elitism')
         if self.cull_num == 0:
             print('[warning] population too small, no culling')
+
+        # inspect generation upon [CTRL]+[Z]
+        signal.signal(signal.SIGTSTP, self.inspect_handler)
+        self.inspect_soon = False
+
+    def inspect_handler(self, signum, frame):
+        if not self.inspect_soon:
+            print(' >> Inspecting after current iteration << ')
+            self.inspect_soon = True
 
     def set_data(self, data):
         self.op.set_data(data)
@@ -65,8 +76,13 @@ class Evolution(object):
 
             # check stopping condition
             self.sort()
-            if self.get_fitness(0) < 1e-4:
+            if self.get_fitness(0) < self.fitness_threshold:
                 break
+
+            # inspect generation if requested
+            if self.inspect_soon:
+                IPython.embed()
+                self.inspect_soon = False
 
         self.sort()
         return self.population, df
