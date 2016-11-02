@@ -32,6 +32,8 @@ class Individual(object):
         self._args = args if not args is None else []
         self._vars = varis if not varis is None else get_variables()
 
+        assert len(self._args) == self._sym.count('{}'), 'invalid argument number for {c}*{term} ({l1}!={l2})'.format(c=self._coeff, term=self._sym, l1=len(self._args), l2=self._sym.count('{}'))
+
     @property
     def coeff(self):
         return self._coeff
