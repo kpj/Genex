@@ -16,6 +16,8 @@ class Operators(object):
         self.data = None
         self.dim = None
 
+        self.gen_func = None
+
     def set_data(self, data):
         self.data = data
         self.dim = len(data[0]['data'][0][1])
@@ -42,7 +44,16 @@ class Operators(object):
         if raw:
             return gen_one()
         else:
-            return [gen_one() for _ in range(self.dim)]
+            dummy = lambda: [gen_one() for _ in range(self.dim)]
+
+            if self.gen_func is None:
+                return dummy()
+
+            res = self.gen_func()
+            if res is None:
+                return dummy()
+            else:
+                return res
 
     def fitness(self, ind_vec):
         """ Compute fitness of single individual
@@ -138,7 +149,7 @@ class Operators(object):
         c1 = random.randrange(len(ind1)-1)
         c2 = random.randrange(len(ind2)-1)
 
-        if random.random() < 10.5:
+        if random.random() < 0.5:
             cdiff = (ind1[c1].coeff - ind2[c2].coeff)/random.randrange(1, 20)
             if not ind1[c1]._fix_coeff:
                 ind1[c1]._coeff -= cdiff

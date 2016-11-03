@@ -5,16 +5,20 @@ Fit model of dynamical system to data
 
 ## Usage
 
-```
-$ python main.py result.pkl
+```bash
+$ python main.py LotkaVolterra result.pkl
 $ python analyze_result.py result.pkl
 ```
 
 ## Tests
 
-```
+```bash
 $ nosetests
 ```
+
+## Presets
+
+Exemplary function definitions can be found in `./presets/examples.py`.
 
 ## Features
 * Initialization

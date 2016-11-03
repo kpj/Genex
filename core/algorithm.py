@@ -49,6 +49,9 @@ class Evolution(object):
     def set_data(self, data):
         self.op.set_data(data)
 
+    def set_individual_setter(self, setter):
+        self.op.gen_func = setter
+
     def get_fitness(self, idx):
         return self.population[idx]['fitness']
 

@@ -20,25 +20,11 @@ def simulate(func, init, resolution=50):
     out = [(cur[0], np.array(cur[1:])) for cur in zip(ts, *res)]
     return out
 
-def generate_data():
+def generate_data(func, dim):
     """ Generate data from ODE
     """
-    def func(state, t):
-        x, y = state
-        return np.array([
-            1.5 * x - x * y,
-            x * y - 3 * y
-        ])
-
-    #def func(state, t):
-    #    x, y = state
-    #    return np.array([
-    #        x,
-    #        -2
-    #    ])
-
     out = []
-    for init in [(0.5, 0.5), (1, 1), (1.5, 1.5)]:
+    for init in [(0.5,)*dim, (1,)*dim, (1.5,)*dim]:
         out.append({
             'init': init,
             'data': simulate(func, init)
