@@ -16,7 +16,7 @@ class TestUtils(TestCase):
         ])
 
         self.assertEqual(ind[0].coeff, -1.6)
-        self.assertEqual(ind[0].symbol, '({})**2')
+        self.assertEqual(ind[0].symbol, '(({})**2)')
         self.assertEqual(len(ind[0].args), 1)
 
         self.assertEqual(ind[1].coeff, 2.8)

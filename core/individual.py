@@ -28,7 +28,7 @@ class Individual(object):
     """
     def __init__(self, coeff=1., symbol='', args=None, varis=None, fix_coeff=False):
         self._coeff = float(coeff)
-        self._sym = symbol
+        self._sym = '({})'.format(symbol)
         self._args = args if not args is None else []
         self._vars = varis if not varis is None else get_variables()
         self._fix_coeff = fix_coeff
