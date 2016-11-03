@@ -92,12 +92,13 @@ class Operators(object):
 
     def _mutate(self, sub):
         # vary coefficient
-        sub._coeff += random.gauss(0, sub.coeff/10)
-        if random.random() < 0.1:
-            sub._coeff *= -1
+        if not sub._fix_coeff:
+            sub._coeff += random.gauss(0, sub.coeff/10)
+            if random.random() < 0.1:
+                sub._coeff *= -1
 
-        if sub.depth >= 5:
-            return
+            if sub.depth >= 5:
+                return
 
         # change function
         if random.random() < 0.5:
@@ -126,9 +127,10 @@ class Operators(object):
     def _crossover(self, ind1, ind2):
         if len(ind1) == 1 or len(ind2) == 1:
             cdiff = (ind1.coeff - ind2.coeff)/random.randrange(1, 20)
-            ind1._coeff -= cdiff
-            ind2._coeff += cdiff
-
+            if not ind1._fix_coeff:
+                ind1._coeff -= cdiff
+            if not ind2._fix_coeff:
+                ind2._coeff += cdiff
             return ind1, ind2
         if ind1.depth >= 5 or ind2.depth >= 5:
             return None, None
@@ -136,10 +138,12 @@ class Operators(object):
         c1 = random.randrange(len(ind1)-1)
         c2 = random.randrange(len(ind2)-1)
 
-        if random.random() < 0.5:
+        if random.random() < 10.5:
             cdiff = (ind1[c1].coeff - ind2[c2].coeff)/random.randrange(1, 20)
-            ind1[c1]._coeff -= cdiff
-            ind2[c2]._coeff += cdiff
+            if not ind1[c1]._fix_coeff:
+                ind1[c1]._coeff -= cdiff
+            if not ind2[c2]._fix_coeff:
+                ind2[c2]._coeff += cdiff
             return ind1, ind2
         else:
             return self._exchange_nodes(ind1, ind2, c1, c2)

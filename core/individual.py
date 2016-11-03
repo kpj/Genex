@@ -26,11 +26,12 @@ SYMBOL_LIST = [
 class Individual(object):
     """ Abstract individual of population
     """
-    def __init__(self, coeff=1., symbol='', args=None, varis=None):
+    def __init__(self, coeff=1., symbol='', args=None, varis=None, fix_coeff=False):
         self._coeff = float(coeff)
         self._sym = symbol
         self._args = args if not args is None else []
         self._vars = varis if not varis is None else get_variables()
+        self._fix_coeff = fix_coeff
 
         assert len(self._args) == self._sym.count('{}'), 'invalid argument number for {c}*{term} ({l1}!={l2})'.format(c=self._coeff, term=self._sym, l1=len(self._args), l2=self._sym.count('{}'))
 

@@ -33,5 +33,6 @@ $ nosetests
   * Keep elite (fittest individuals) over generations
   * Apply culling technique
   * Pause procedure and inspect generation with [CTRL]+[Z]
+  * Optionally fix certain coefficients
 * Fitness
   * Root relative squared error of series with multiple initial conditions
