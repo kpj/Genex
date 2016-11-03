@@ -81,14 +81,21 @@ class Individual(object):
 
     def _repr(self):
         if len(self.args) > 0:
-            return '{c:.2} * ({term})'.format(
-                c=self.coeff,
-                term=self.symbol.format(*[a._repr() for a in self.args]))
+            term = self.symbol.format(*[a._repr() for a in self.args])
         else:
-            if 'VAR' in self.symbol:
-                return '{:.2} * {}'.format(self.coeff, self.symbol)
+            term = self.symbol
+
+        if round(self.coeff, 1) == 1 and len(term) > 0:
+            prefix = ''
+        elif round(self.coeff, 1) == -1 and len(term) > 0:
+            prefix = '-'
+        else:
+            if int(self.coeff) != self.coeff:
+                prefix = '{c:.2}*'.format(c=self.coeff)
             else:
-                return '{:.2}'.format(self.coeff)
+                prefix = '{c:g}*'.format(c=self.coeff)
+
+        return '{p}{t}'.format(p=prefix, t=term)
 
     def latex_repr(self):
         return '${}$'.format(latex(self.simplified()))

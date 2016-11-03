@@ -1,7 +1,7 @@
 from unittest import TestCase
 
-from individual import Individual
-from operators import *
+from core.individual import Individual
+from core.operators import *
 
 
 class TestCrossover(TestCase):
