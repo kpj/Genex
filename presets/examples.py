@@ -56,7 +56,7 @@ class LorenzSystem(BasePreset):
 
     def generate_base_individual(self):
         return [
-            Individual(1., '({})-({})', [
+            Individual(random.uniform(0,20), '({})-({})', [
                 Individual(1, 'VAR_1_', fix_coeff=True),
                 Individual(1, 'VAR_0_', fix_coeff=True)
             ]),
@@ -64,7 +64,7 @@ class LorenzSystem(BasePreset):
                 Individual(1, '({})*({})', [
                     Individual(1., 'VAR_0_', fix_coeff=True),
                     Individual(1., '({})-({})', [
-                        Individual(1, '1'),
+                        Individual(random.uniform(0,20), '1'),
                         Individual(1, 'VAR_2_', fix_coeff=True)
                     ], fix_coeff=True)
                 ], fix_coeff=True),
@@ -75,6 +75,6 @@ class LorenzSystem(BasePreset):
                     Individual(1., 'VAR_0_', fix_coeff=True),
                     Individual(1., 'VAR_1_', fix_coeff=True)
                 ], fix_coeff=True),
-                Individual(1, 'VAR_2_')
+                Individual(random.uniform(0,5), 'VAR_2_')
             ], fix_coeff=True)
         ]
