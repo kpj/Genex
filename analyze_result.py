@@ -36,6 +36,9 @@ def main(fname):
     plot_individual(res['population'][0]['individual'], res['data'])
 
 if __name__ == '__main__':
+    sns.set_style('white')
+    plt.style.use('seaborn-poster')
+
     if len(sys.argv) != 2:
         print('Usage: {} <result file>'.format(sys.argv[0]))
         exit(-1)
