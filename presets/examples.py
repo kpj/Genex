@@ -44,7 +44,7 @@ class LorenzSystem(BasePreset):
             x, y, z = state
 
             o = 10
-            p = 14
+            p = 28
             b = 8/3
 
             return np.array([
@@ -64,7 +64,7 @@ class LorenzSystem(BasePreset):
                 Individual(1, '({})*({})', [
                     Individual(1., 'VAR_0_', fix_coeff=True),
                     Individual(1., '({})-({})', [
-                        Individual(random.uniform(0,20), '1'),
+                        Individual(random.uniform(0,50), '1'),
                         Individual(1, 'VAR_2_', fix_coeff=True)
                     ], fix_coeff=True)
                 ], fix_coeff=True),
