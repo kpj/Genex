@@ -158,7 +158,9 @@ class Evolution(object):
             p1 = copy.deepcopy(p1)
             p2 = copy.deepcopy(p2)
 
-            tmp = self.op.crossover(p1['individual'], p2['individual'])
+            tmp = self.op.crossover(
+                copy.deepcopy(p1['individual']),
+                copy.deepcopy(p2['individual']))
             if not tmp[0] is None and not tmp[1] is None:
                 c1 = {
                     'individual': tmp[0],
